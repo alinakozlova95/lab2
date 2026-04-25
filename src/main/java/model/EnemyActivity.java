@@ -6,15 +6,25 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 /**
  *
  * @author alina
  */
+
 public class EnemyActivity {
     private String behaviorType;
+    
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "targetPriority")
     private List<String> targetPriority = new ArrayList<>();
+    
+    @JacksonXmlElementWrapper(localName = "attackPatterns")
+    @JacksonXmlProperty(localName = "pattern")
     private List<String> attackPatterns = new ArrayList<>();
+    
     private String mobility;
     private String escalationRisk;
 
@@ -33,7 +43,6 @@ public class EnemyActivity {
     public void setTargetPriority(List<String> targetPriority) { 
         this.targetPriority = targetPriority; 
     }
-
     public void setAttackPatterns(List<String> attackPatterns) { 
         this.attackPatterns = attackPatterns; 
     }
@@ -44,7 +53,6 @@ public class EnemyActivity {
         }
         this.targetPriority.add(value);
     }
-
     public void setAttackPatterns(String value) {
         if (this.attackPatterns == null) {
             this.attackPatterns = new ArrayList<>();

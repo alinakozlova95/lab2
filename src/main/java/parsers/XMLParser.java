@@ -6,7 +6,8 @@ package parsers;
 import java.io.File;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import model.Mission;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
 /**
  *
  * @author alina
@@ -26,6 +27,17 @@ public class XMLParser extends AbstractParser {
 
     @Override
     public boolean supports(String fileName) {
-        return fileName.toLowerCase().endsWith(".xml");
+        File file = new File(fileName);
+        if (!file.exists() || !file.isFile()) {
+            return fileName.toLowerCase().endsWith(".xml");
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String firstLine = reader.readLine();
+            if (firstLine == null) return false;
+            String trimmed = firstLine.trim();
+            return trimmed.startsWith("<");
+        } catch (Exception e) {
+            return fileName.toLowerCase().endsWith(".xml");
+        }
     }
 }

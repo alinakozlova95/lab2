@@ -7,7 +7,6 @@ import parsers.Parser;
 import model.Mission;
 import parsers.RegistryParser;
 import report.ReportGenerator;
-
 /**
  *
  * @author alina
@@ -23,10 +22,11 @@ public class MissionService {
         this.reportGenerator = new report.ShortReport(); 
     }
     private void registerDefaultParsers() {
-        registryParser.register(new parsers.JsonParser());
-        registryParser.register(new parsers.XMLParser());
-        registryParser.register(new parsers.YAMLParser());
-        registryParser.register(new parsers.TXTParser());
+    registryParser.register(new parsers.JsonParser());            
+    registryParser.register(new parsers.XMLParser());            
+    registryParser.register(new parsers.TXTParser());       
+    registryParser.register(new parsers.YAMLParser());           
+    registryParser.register(new parsers.NoExtensionFileParser()); 
     }
 
 

@@ -7,6 +7,8 @@ import java.io.File;
 import model.Mission;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import java.io.BufferedReader;
+import java.io.FileReader;
 /**
  *
  * @author alina
@@ -26,7 +28,22 @@ public class YAMLParser extends AbstractParser {
 
     @Override
     public boolean supports(String fileName) {
-        String lower = fileName.toLowerCase();
-        return lower.endsWith(".yaml") || lower.endsWith(".yml");
+        File file = new File(fileName);
+        if (!file.exists() || !file.isFile()) {
+            String lower = fileName.toLowerCase();
+            return lower.endsWith(".yaml") || lower.endsWith(".yml");
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String firstLine = reader.readLine();
+            if (firstLine == null) return false;
+            String trimmed = firstLine.trim();
+            if (trimmed.startsWith("{") || trimmed.startsWith("[") || trimmed.startsWith("<") || trimmed.contains("|")) {
+                return false;
+            }
+            return trimmed.contains(":") && !trimmed.contains("|");
+        } catch (Exception e) {
+            String lower = fileName.toLowerCase();
+            return lower.endsWith(".yaml") || lower.endsWith(".yml");
+        }
     }
 }

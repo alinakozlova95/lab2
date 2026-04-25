@@ -224,9 +224,23 @@ public class TXTParser extends AbstractParser {
         return builder.build();
     }
 
-   @Override
-    public boolean supports(String fileName) {
-        String lower = fileName.toLowerCase();
-        return lower.endsWith(".txt") || !lower.contains(".");
-    }
+  @Override
+  public boolean supports(String fileName) {
+      File file = new File(fileName);
+      if (!file.exists() || !file.isFile()) {
+          return fileName.toLowerCase().endsWith(".txt");
+      }
+      try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+          String firstLine = reader.readLine();
+          if (firstLine == null) return false;
+          String trimmed = firstLine.trim();
+          if (trimmed.startsWith("[")) return true;
+          if (trimmed.contains(": ") && !trimmed.startsWith("{") && !trimmed.startsWith("<")) {
+              return true;
+          }
+          return fileName.toLowerCase().endsWith(".txt");
+      } catch (Exception e) {
+          return fileName.toLowerCase().endsWith(".txt");
+      }
+  }
 }

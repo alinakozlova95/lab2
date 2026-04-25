@@ -152,18 +152,21 @@ public class NoExtensionFileParser extends AbstractParser {
 
     @Override
     public boolean supports(String fileName) {
-        String lowerName = fileName.toLowerCase();
-        
-        
-        if (lowerName.endsWith(".json") || 
-            lowerName.endsWith(".xml") || 
-            lowerName.endsWith(".txt") || 
-            lowerName.endsWith(".yaml") || 
-            lowerName.endsWith(".yml")) {
+        File file = new File(fileName);
+        if (!file.exists() || !file.isFile()) {
             return false;
         }
-        
-        
-        return true;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String firstLine = reader.readLine();
+            if (firstLine == null) return false;
+            String trimmed = firstLine.trim();
+            if (trimmed.contains("|")) return true;
+            if (!trimmed.startsWith("{") && !trimmed.startsWith("<") && !trimmed.startsWith("[") && !trimmed.contains(": ")) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
